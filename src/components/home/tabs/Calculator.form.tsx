@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dimensions,
     Platform,
@@ -8,26 +8,62 @@ import {
     View,
 } from "react-native";
 
-// import { Picker } from "@react-native-picker/picker";
+import { Picker } from "@react-native-picker/picker";
 
 import { Ionicons } from "@expo/vector-icons";
+import { useInput } from "../../../hooks/useInput.hook";
+import { usePerson } from "../../../hooks/usePerson.hook";
+import Person from "../../../domain/Person";
 
-export default function DropsCalculator() {
-    const [dilution, setDilution] = useState(0.5);
+export default function CalculatorForm() {
+    const [dilution, setDilution] = useState("Não Informar");
+    const [, setData] = usePerson();
     const [iosPickerOpen, setIosPickerOpen] = useState(false);
+    const [height, heightProps, ] = useInput("");
+    const [weight, weightProps, ] = useInput("");
+
+    useEffect(() => {
+        if (height && weight) {
+            const floatHeight = parseFloat(height.replace(',', '.'));
+            const floatWeight = parseFloat(weight.replace(',', '.'));
+            if(!isNaN(floatHeight) && !isNaN(floatWeight)) {
+                console.log('calculating IMC...');
+                calculateImc(floatHeight, floatWeight);
+            } else {
+                console.log('There is value, but still invalid...');
+            }
+        }
+    }, [height, weight]);
+
+    const calculateImc = (theHeight: number, theWeight: number) => {
+        console.log(theHeight);
+        console.log(theWeight);
+        const person = new Person(theHeight, theWeight);
+        person.imc = theWeight / (theHeight ** 2);
+
+        if (person.imc < 18.5) person.imcDescription = "Magreza";
+        else if (person.imc < 24.9) person.imcDescription = "Normal";
+        else if (person.imc <= 30.0) person.imcDescription = "Sobrepeso";
+        else if (person.imc > 30.0) person.imcDescription = "Obesidade";
+        console.log(person);
+        setData(person);
+    }
 
     function renderPickerIOS() {
         if (Platform.OS !== "ios") return null;
         return (
             <View style={{ flex: 1 }}>
                 {!iosPickerOpen ? (
-                    <View style={styles.pickerAreaIos} onTouchEnd={() => setIosPickerOpen(true)}>
+                    <View
+                        style={styles.pickerAreaIos}
+                        onTouchEnd={() => setIosPickerOpen(true)}
+                    >
                         <TextInput
                             style={[{ flex: 8 }, styles.pickerInputIos]}
-                            placeholder="Diluição (ideal entre 0.5 e 3 %)"
+                            placeholder="Sexo"
                             autoCapitalize="none"
                             allowFontScaling={true}
-                            value={`${dilution.toFixed(1)} %`}
+                            value={dilution}
                             editable={false}
                         />
                         <TouchableOpacity
@@ -42,10 +78,10 @@ export default function DropsCalculator() {
                         </TouchableOpacity>
                     </View>
                 ) : null}
-                {/* {iosPickerOpen ? (
+                {iosPickerOpen ? (
                     <Picker
                         style={[styles.input, styles.pickerIos]}
-                        prompt="Diluição ios (ideal entre 0.5 e 3 %)"
+                        prompt="Sexo"
                         mode="dialog"
                         selectedValue={dilution}
                         onValueChange={(value) => {
@@ -53,49 +89,56 @@ export default function DropsCalculator() {
                             setDilution(value);
                         }}
                     >
-                        <Picker.Item value={0.5} label="0.5 %" />
-                        <Picker.Item value={1.0} label="1.0 %" />
-                        <Picker.Item value={2.0} label="2.0 %" />
-                        <Picker.Item value={3.0} label="3.0 %" />
-                        <Picker.Item value={4.0} label="4.0 %" />
-                        <Picker.Item value={5.0} label="5.0 %" />
+                        <Picker.Item value={"Feminino"} label="Feminino" />
+                        <Picker.Item value={"Masculino"} label="Masculino" />
+                        <Picker.Item value={"Não Informar"} label="Não Informar" />
                     </Picker>
-                ) : null} */}
+                ) : null}
             </View>
         );
     }
 
     function renderPickerAndroid() {
         if (Platform.OS === "ios") return null;
-        return null;
-        // return (
-        //     <View style={[{flex: 1}, styles.pickerAndroid]}>
-        //         <Picker
-        //             style={styles.input}
-        //             prompt="Diluição (ideal entre 0.5 e 3 %)"
-        //             mode="dialog"
-        //             selectedValue={dilution}
-        //             onValueChange={(value) => setDilution(value)}
-        //         >
-        //             <Picker.Item value={0.5} label="0.5 %" />
-        //             <Picker.Item value={1.0} label="1.0 %" />
-        //             <Picker.Item value={2.0} label="2.0 %" />
-        //             <Picker.Item value={3.0} label="3.0 %" />
-        //             <Picker.Item value={4.0} label="4.0 %" />
-        //             <Picker.Item value={5.0} label="5.0 %" />
-        //         </Picker>
-        //     </View>
-        // );
+        return (
+            <View style={[{ flex: 1 }, styles.pickerAndroid]}>
+                <Picker
+                    style={styles.input}
+                    prompt="Sexo"
+                    mode="dialog"
+                    selectedValue={dilution}
+                    onValueChange={(value) => setDilution(value)}
+                >
+                    <Picker.Item value={"Feminino"} label="Feminino" />
+                    <Picker.Item value={"Masculino"} label="Masculino" />
+                    <Picker.Item value={"Não Informar"} label="Não Informar" />
+                </Picker>
+            </View>
+        );
     }
 
     return (
         <View style={styles.fields}>
-            { !iosPickerOpen ? <TextInput
-                style={styles.input}
-                placeholder="Volume (ml)"
-                autoCapitalize="none"
-                allowFontScaling={true}
-            /> : null }
+            {!iosPickerOpen ? (
+                <View style={{flex: 2}}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Peso (kg)"
+                        autoCapitalize="none"
+                        allowFontScaling={true}
+                        keyboardType="decimal-pad"
+                        {...weightProps}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Altura (m)"
+                        autoCapitalize="none"
+                        allowFontScaling={true}
+                        keyboardType="decimal-pad"
+                        {...heightProps}
+                    />
+                </View>
+            ) : null}
             {renderPickerAndroid()}
             {renderPickerIOS()}
         </View>

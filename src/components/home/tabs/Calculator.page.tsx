@@ -1,18 +1,24 @@
 import React from "react";
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import CalculatorForm from "./Calculator.form";
+
+import { usePerson } from "../../../hooks/usePerson.hook";
 
 import measure from "../../../../assets/raster.jpeg";
 
 function renderResult() {
+    const [person,] = usePerson();
+    
     return (
         <View style={[styles.container, styles.result]}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <Image source={measure} style={styles.image} />
+            </TouchableWithoutFeedback>
             <View style={styles.resultText}>
                 <View>
-                    <Text style={styles.title}>IMC Calculado: 25</Text>
-                    <Text style={styles.regularText}>Sobrepeso</Text>
+                    <Text style={styles.title}>IMC Calculado: { person?.imc?.toFixed(2) }</Text>
+                    <Text style={styles.regularText}>{ person?.imcDescription }</Text>
                 </View>
             </View>
         </View>
