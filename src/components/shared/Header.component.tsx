@@ -1,3 +1,4 @@
+import { HeaderBackButton } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Dimensions, Image, Platform, StyleSheet, Text } from "react-native";
@@ -5,10 +6,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import logo from "../../../assets/icon.png";
 
-export default function Header() {
+export default function Header(props: any) {
+    const canReturn = Boolean(props.canReturn);
+    
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light" backgroundColor="#000" />
+            { canReturn ? <HeaderBackButton style={{flex: 1}} onPress={() => props.navigation.goBack()} /> : null }
             <Text style={styles.title}>Calculadora IMC</Text>
             <Image source={logo} style={styles.logo} />
         </SafeAreaView>

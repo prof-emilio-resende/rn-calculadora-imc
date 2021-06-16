@@ -1,6 +1,6 @@
 import React from "react";
 
-import { StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -8,7 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import Header from "./src/components/shared/Header.component";
 
-function Home() {
+function Home(props: any) {
     return (
         <View style={styles.innerContainer}>
             <Text>This is the home!</Text>
@@ -16,10 +16,11 @@ function Home() {
     );
 }
 
-function Login() {
+function Login(props: any) {
     return (
         <View style={styles.innerContainer}>
             <Text>This is the login form!</Text>
+            <Button title="Go home" onPress={() => props.navigation.navigate("Home")} />
         </View>
     );
 }
@@ -39,7 +40,15 @@ export default function App() {
                         }}
                     >
                         <Stack.Screen name="Login" component={Login} />
-                        <Stack.Screen name="Home" component={Home} />
+                        <Stack.Screen name="Home" component={Home} options={{
+                          header: (props) => (
+                            <Header
+                              title="Calculadora IMC"
+                              canReturn={true}
+                              navigation={props.navigation}
+                            />
+                          )
+                        }}/>
                     </Stack.Navigator>
                 </NavigationContainer>
             </View>
