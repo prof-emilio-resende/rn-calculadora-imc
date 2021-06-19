@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CalculadoraImc",
-    "slug": "CalculadoraImc",
+    "name": "Murta Calculadora Imc",
+    "slug": "MurtaCalculadoraImc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
