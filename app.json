@@ -19,11 +19,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "br.com.calculadoraimc",
+      "bundleIdentifier": "br.com.murta.calculadoraimc",
       "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "br.com.calculadoraimc",
+      "package": "br.com.murta.calculadoraimc",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
