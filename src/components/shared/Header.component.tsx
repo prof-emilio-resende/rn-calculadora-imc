@@ -8,7 +8,8 @@ import logo from "../../../assets/icon.png";
 
 export default function Header(props: any) {
     const canReturn = Boolean(props.canReturn);
-    
+    console.log(Dimensions.get("screen"));
+    console.log(Dimensions.get("window"));
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light" backgroundColor="#000" />
@@ -20,6 +21,12 @@ export default function Header(props: any) {
 }
 
 const STATUSBAR_DEFAULT_HEIGHT = 20;
+const STATUSBAR_BIGGER_HEIGHT = 40;
+
+const getTopMenuHeight = () => {
+    if (Dimensions.get("screen").height > 700) return STATUSBAR_BIGGER_HEIGHT;
+    return STATUSBAR_DEFAULT_HEIGHT;
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -47,7 +54,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderBottomWidth: 1,
         borderBottomColor: "#aaa",
-        borderTopWidth: Platform.OS === "ios" ? STATUSBAR_DEFAULT_HEIGHT : 0,
+        borderTopWidth: Platform.OS === "ios" ? getTopMenuHeight() : 0,
         borderTopColor: "#000000",
     },
     title: {
